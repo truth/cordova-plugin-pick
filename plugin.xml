@@ -2,7 +2,7 @@
 <plugin id="cordova-plugin-pick" version="0.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
     <name>Pick</name>
     <js-module name="Pick" src="www/Pick.js">
-        <clobbers target="Pick" />
+        <clobbers target="window.plugins.Pick" />
     </js-module>
     <platform name="android">
         <config-file parent="/*" target="res/xml/config.xml">

@@ -1,0 +1,28 @@
+{
+  "name": "cordova-plugin-pick",
+  "version": "0.0.1",
+  "description": "Cordova Pick Plugin",
+  "cordova": {
+    "id": "cordova-plugin-pick",
+    "platforms": [
+      "android"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/truth/cordova-plugin-pick"
+  },
+  "keywords": [
+    "cordova",
+    "pick",
+    "cordova-android"
+  ],
+  "scripts": {
+    "precommit": "npm run gen-docs && git add README.md",
+    "gen-docs": "jsdoc2md --template \"jsdoc2md/TEMPLATE.md\" \"www/**/*.js\" --plugin \"dmd-plugin-cordova-plugin\" > README.md",
+    "test": "npm run jshint",
+    "jshint": "node node_modules/jshint/bin/jshint www && node node_modules/jshint/bin/jshint src && node node_modules/jshint/bin/jshint tests"
+  },
+  "author": "King Truth",
+  "license": "Apache-2.0"
+}

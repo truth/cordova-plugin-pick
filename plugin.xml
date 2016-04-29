@@ -12,5 +12,7 @@
         </config-file>
         <config-file parent="/*" target="AndroidManifest.xml"></config-file>
         <source-file src="src/android/Pick.java" target-dir="src/com/llzc/pick/Pick" />
+        <source-file src="src/android/WheelView.java" target-dir="src/com/llzc/pick/WheelView" />
+        <source-file src="src/android/Library/res/layout/wheel_view.xml" target-dir="res/layout/" />
     </platform>
 </plugin>

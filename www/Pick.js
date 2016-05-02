@@ -6,8 +6,8 @@ exports.echo = function(arg0, success, error) {
 module.exports = new Pick();
 */
 function Pick() {}
-Pick.prototype.echo =function(arg0, success, error) {
-    cordova.exec(success, error, "Pick", "echo", [arg0]);
+Pick.prototype.echo =function(arg0,arg1,arg2, success, error) {
+    cordova.exec(success, error, "Pick", "echo", [arg0,arg1,arg2]);
 };
 
 Pick.install = function () {

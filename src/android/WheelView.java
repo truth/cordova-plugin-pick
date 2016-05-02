@@ -30,7 +30,16 @@ import java.util.List;
 public class WheelView extends ScrollView {
     public static final String TAG = WheelView.class.getSimpleName();
 
+    private int index;
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+    public int getIndex(int index) {
+        return index;
+    }
     public static class OnWheelViewListener {
+        public int index;
         public void onSelected(int selectedIndex, String item) {
         }
     }
@@ -195,8 +204,8 @@ public class WheelView extends ScrollView {
             itemHeight = getViewMeasuredHeight(tv);
             Log.d(TAG, "itemHeight: " + itemHeight);
             views.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, itemHeight * displayItemCount));
-            //LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) this.getLayoutParams();
-            this.setLayoutParams(new LinearLayout.LayoutParams(320, itemHeight * displayItemCount));
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) this.getLayoutParams();
+            this.setLayoutParams(new LinearLayout.LayoutParams(lp.width, itemHeight * displayItemCount));
         }
         return tv;
     }

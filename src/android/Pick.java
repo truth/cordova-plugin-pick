@@ -18,12 +18,14 @@ import android.widget.LinearLayout;
 import com.ionicframework.lianlianapp759296.R;
 import com.llzc.pick.WheelView;
 import android.app.Activity;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import android.os.Message;
 import android.os.Handler;
 import org.apache.cordova.PluginResult;
-
-import java.util.List;
 /**
  * This class echoes a string called from JavaScript.
  */
@@ -40,6 +42,7 @@ public class Pick extends CordovaPlugin{
     private List[] options;
     private int[] optIndexs;
     private String title;
+    private LinearLayout line;
     private Runnable runnable = new Runnable() {
         public void run() {
             Log.d(TAG, "[activity]selectedIndex: ");
@@ -57,7 +60,7 @@ public class Pick extends CordovaPlugin{
             });
             */
             View outerView = LayoutInflater.from(cordova.getActivity()).inflate(R.layout.wheel_view, null);
-            LinearLayout line = (LinearLayout )outerView;
+            line = (LinearLayout )outerView;
             WheelView wv = (WheelView) outerView.findViewById(R.id.wheel_view_wv);
             LinearLayout.LayoutParams  lp = ( LinearLayout.LayoutParams)wv.getLayoutParams();
 
@@ -73,6 +76,12 @@ public class Pick extends CordovaPlugin{
                 WheelView.OnWheelViewListener wvl = new WheelView.OnWheelViewListener() {
                     @Override
                     public void onSelected(int selectedIndex, String item) {
+                        if((index==1|| index==2) && result.length>2) {
+                            int year = Integer.parseInt(result[0]);
+                            int month = Integer.parseInt(result[1]);
+                            WheelView wView = (WheelView)line.getChildAt(2);
+                            wView.setItems(getItems(getMonthDay(year,month),0));
+                        }
                         result[index] = item;
                         Log.d(TAG, "[Dialog]selectedIndex: " + selectedIndex + ", item: " + item);
                     }
@@ -94,11 +103,11 @@ public class Pick extends CordovaPlugin{
                 }
             });
 
-            AlertDialog.Builder dlg = new AlertDialog.Builder(activity);
+            AlertDialog.Builder dlg = new AlertDialog.Builder(activity,R.style.dialog);//R.style.dialog
             dlg.setTitle(title);
             dlg.setView(outerView);
             //dlg.setNegativeButton(buttonLabels.getString(0),
-            dlg.setPositiveButton("OK",
+            dlg.setPositiveButton("确定",
                 new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -135,23 +144,42 @@ public class Pick extends CordovaPlugin{
 
     public List[] getList(String msg,String indexs) {
         List[] strs;
-        String[] opt = msg.split(";");
-        strs = new List[opt.length];
-        result = new String[opt.length];
-        optIndexs = new int[opt.length];
-        String[] idx = null;
-        if(indexs!=null)
-        {
-            idx = indexs.split(",");
-        }
-        for(int i=0;opt!=null&& i<opt.length;i++) {
-            strs[i] = Arrays.asList(opt[i].split(","));
-            if(idx!=null && idx.length>=i){
-                optIndexs[i] = strs[i].indexOf(idx[i]);
-                result[i] = idx[i];
-            }    
-            else
-                optIndexs[i]=0;
+        if(msg.matches("\\d+")) {
+            Calendar calendar  = Calendar.getInstance();
+            Date date = new Date(Long.parseLong(msg));
+            calendar.setTime(date);
+            strs = new List[5];
+            result = new String[5];
+            optIndexs = new int[5];
+            int n = calendar.get(Calendar.YEAR);
+            strs[0] = getItems(3,n-1);result[0] = n+"";optIndexs[0]=0;
+            n = calendar.get(Calendar.MONTH);
+            strs[1] = getItems(12,0);result[1] = (n+1)+"";optIndexs[1]=n;
+            n = calendar.get(Calendar.DAY_OF_MONTH);
+            strs[2] = getItems(30,0);result[2] = n+"";optIndexs[2]=n-1;
+            n = calendar.get(Calendar.HOUR_OF_DAY);
+            strs[3] = getItems(24,-1);result[3] = n+"";optIndexs[3]=n;
+            n = calendar.get(Calendar.MINUTE);
+            strs[4] = getItems(60,-1);result[4] = n+"";optIndexs[4]=n;
+        }else {
+            String[] opt = msg.split(";");
+            strs = new List[opt.length];
+            result = new String[opt.length];
+            optIndexs = new int[opt.length];
+            String[] idx = null;
+            if(indexs!=null)
+            {
+                idx = indexs.split(",");
+            }
+            for(int i=0;opt!=null&& i<opt.length;i++) {
+                strs[i] = Arrays.asList(opt[i].split(","));
+                if(idx!=null && idx.length>=i){
+                    optIndexs[i] = strs[i].indexOf(idx[i]);
+                    result[i] = idx[i];
+                }    
+                else
+                    optIndexs[i]=0;
+            }
         }
         return strs;
     }
@@ -164,5 +192,21 @@ public class Pick extends CordovaPlugin{
                 str+=result[i];
         }
         return str;
+    }
+    public boolean isLeapYear(int year) {  
+        return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);  
+    }  
+    public int getMonthDay(int year ,int month) {
+        if(month==2) return isLeapYear(year)?28:29;
+        if(month==1 || month ==3 || month==5 && month==7 || month==8 || month==10 || month==12) return 31;
+        return 30;
+    }
+    public List<String> getItems(int size,int offset) {
+        List<String> list =  new ArrayList<String>();
+        for (Integer i=1;i<=size;i++) {
+            Integer n = i+offset;
+            list.add(n.toString());
+        }
+        return list;
     }
 }
